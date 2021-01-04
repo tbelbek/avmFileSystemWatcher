@@ -129,13 +129,13 @@ namespace avmFileSystemWatcher
 				this.fsw.Filter = this.sourceWildcard;
 
 				// EVENTS TO NOTIFY
-				this.fsw.NotifyFilter = NotifyFilters.Attributes |
+				this.fsw.NotifyFilter = /*NotifyFilters.Attributes |*/
 										NotifyFilters.CreationTime |
-										NotifyFilters.DirectoryName |
+										//NotifyFilters.DirectoryName |
 										NotifyFilters.FileName |
-										NotifyFilters.LastAccess |
+										//NotifyFilters.LastAccess |
 										NotifyFilters.LastWrite |
-										NotifyFilters.Security |
+										//NotifyFilters.Security |
 										NotifyFilters.Size;
 
 				// THIS PARAMETER, TURNS MONITOR ON
@@ -178,7 +178,6 @@ namespace avmFileSystemWatcher
             if (!CheckIsFile(e)) return;
 
 			string msg = string.Format("UPDATED: FILE {0} | NAME {1} | EVENT {2}", e.FullPath, e.Name, e.ChangeType.ToString());
-
 
             File.Copy(Path.Combine(e.FullPath), Path.Combine(this.destinationPath, Path.GetFileName(e.FullPath)), true);
 
