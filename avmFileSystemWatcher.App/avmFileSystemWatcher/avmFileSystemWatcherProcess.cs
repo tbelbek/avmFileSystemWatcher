@@ -54,7 +54,7 @@ namespace avmFileSystemWatcher
 					this.fsw = new FileSystemWatcher();
 					this.fsw.Changed += new FileSystemEventHandler(fsw_Changed);
 					this.fsw.Created += new FileSystemEventHandler(fsw_Created);
-					this.fsw.Deleted += new FileSystemEventHandler(fsw_Deleted);
+					//this.fsw.Deleted += new FileSystemEventHandler(fsw_Deleted);
 					this.fsw.Renamed += new RenamedEventHandler(fsw_Renamed);					
 				}
 
@@ -142,7 +142,7 @@ namespace avmFileSystemWatcher
 				this.fsw.EnableRaisingEvents = true;
 
 				// INCLUDE SUB-FOLDERS ?
-				this.fsw.IncludeSubdirectories = false;
+				this.fsw.IncludeSubdirectories = true;
 
 				running = true;
 
@@ -172,19 +172,36 @@ namespace avmFileSystemWatcher
 
 		private void fsw_Changed(object sender, FileSystemEventArgs e)
 		{
+
+            if (!CheckIsFile(e)) return;
+
 			string msg = string.Format("UPDATED: FILE {0} | NAME {1} | EVENT {2}", e.FullPath, e.Name, e.ChangeType.ToString());
 
-			Console.WriteLine(msg);
 
-			Out +=  msg + Environment.NewLine;
+            File.Copy(Path.Combine(e.FullPath), Path.Combine(this.destinationPath, Path.GetFileName(e.FullPath)), true);
 
-			validateForceStop();
-		}
+            Console.WriteLine(msg);
 
-		private void fsw_Created(object sender, FileSystemEventArgs e)
+            this.Out += msg + Environment.NewLine;
+
+            this.validateForceStop();
+
+        }
+
+        private static bool CheckIsFile(FileSystemEventArgs e)
+        {
+            FileAttributes attr = File.GetAttributes(e.FullPath);
+
+            //detect whether its a directory or file
+            return !attr.HasFlag(FileAttributes.Directory);
+        }
+
+        private void fsw_Created(object sender, FileSystemEventArgs e)
 		{
 			try
 			{
+                if (!CheckIsFile(e)) return;
+				
 				if (!Directory.Exists(Path.GetDirectoryName(e.FullPath)))
 				{
 					try
@@ -216,13 +233,16 @@ namespace avmFileSystemWatcher
 						throw new Exception("SOURCE PATH IS INVALID.");
 					}
 				}
+
+                File.Copy(Path.Combine(e.FullPath), Path.Combine(destinationPath, Path.GetFileName(e.FullPath)), true);
+
 				string msg1 = string.Format("CREATED: {0} | {1} | {2}", e.FullPath, e.Name, e.ChangeType.ToString());
 				Out += msg1 + Environment.NewLine;
 
 				string msg2 = string.Format("COPIED: {0} | {1}", e.FullPath, destinationPath + e.Name);
 				Out +=  msg1 + Environment.NewLine;
 
-				Console.WriteLine(msg1);
+                Console.WriteLine(msg1);
 				Console.WriteLine(msg2);
 			}
 			catch (Exception ex)
@@ -247,7 +267,12 @@ namespace avmFileSystemWatcher
 
 		private void fsw_Renamed(object sender, RenamedEventArgs e)
 		{
+
+            if (!CheckIsFile(e)) return;
+
 			string msg = string.Format("NAME UPDATED: {0} | {1} | {2}", e.FullPath, e.Name, e.ChangeType.ToString());
+
+            File.Copy(Path.Combine(e.FullPath), Path.Combine(destinationPath, Path.GetFileName(e.FullPath)), true);
 
 			Console.WriteLine(msg);
 

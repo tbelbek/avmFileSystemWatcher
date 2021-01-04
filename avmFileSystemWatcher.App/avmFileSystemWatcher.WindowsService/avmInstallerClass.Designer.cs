@@ -39,9 +39,9 @@
 			// 
 			// avmServiceInstaller
 			// 
-			this.avmServiceInstaller.Description = "avmFileSystemWatcher Windows Service To Sync Folders";
-			this.avmServiceInstaller.DisplayName = "avmFileSystemWatcher Windows Service";
-			this.avmServiceInstaller.ServiceName = "ServicoSincronizacaoRemessas";
+			this.avmServiceInstaller.Description = "FileSystemWatcher Windows Service To Sync Folders";
+			this.avmServiceInstaller.DisplayName = "FileSystemWatcher Windows Service";
+			this.avmServiceInstaller.ServiceName = "FileSystemWatcher";
 			this.avmServiceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
 			// 
 			// avmInstallerClass
