@@ -149,6 +149,8 @@ namespace avmFileSystemWatcher
 				// WAIT TIMEOUT
 				WaitForChangedResult wcr = fsw.WaitForChanged(WatcherChangeTypes.All, this.timeout);
 
+                Out = string.Empty;
+
 				// TIMEOUT
 				if (wcr.TimedOut)
 				{
